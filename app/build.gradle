@@ -1,0 +1,75 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.example.yangshiptv'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.yangshiptv"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // ---- Signing ----
+    // Credentials come from environment variables first (CI), then keystore.properties
+    // (local). If neither is present the release build stays unsigned (the project
+    // still compiles); use `assembleDebug` for a ready-to-install signed APK.
+    def envStoreFile = System.getenv('KEYSTORE_FILE')
+    def envStorePw   = System.getenv('KEYSTORE_PASSWORD')
+    def envAlias     = System.getenv('KEY_ALIAS')
+    def envKeyPw     = System.getenv('KEY_PASSWORD')
+
+    def ksProps = new Properties()
+    def ksFile = rootProject.file('keystore.properties')
+    if (ksFile.exists()) ksProps.load(new FileInputStream(ksFile))
+
+    def storeFile = envStoreFile ?: ksProps['storeFile']
+    def storePw   = envStorePw   ?: ksProps['storePassword']
+    def alias     = envAlias     ?: ksProps['keyAlias']
+    def keyPw     = envKeyPw     ?: ksProps['keyPassword']
+
+    def haveKeystore = storeFile && storePw && alias && keyPw
+
+    signingConfigs {
+        release {
+            if (haveKeystore) {
+                storeFile rootProject.file(storeFile)
+                storePassword storePw
+                keyAlias alias
+                keyPassword keyPw
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (haveKeystore) signingConfig signingConfigs.release
+        }
+        debug {
+            // Debug builds are signed automatically by the Android Gradle Plugin.
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+}

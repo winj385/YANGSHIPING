@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">央视频电视直播</string>
+    <string name="webview_too_old_title">网页内核版本过旧</string>
+    <string name="webview_too_old_msg">当前系统的 Android System WebView 版本太旧（检测到 %1$s），可能无法正常播放或会被要求下载 App。\n\n建议：在电视「设置 → 应用 → Android System WebView」中更新到最新版本，或在 Google Play / 应用市场更新后重试。\n\n是否仍要以当前版本继续尝试？</string>
+    <string name="webview_missing_msg">未检测到 Android System WebView，可能无法加载直播页面。是否仍要继续？</string>
+    <string name="fallback_source">已切换到央视网备用源 (tv.cctv.com)</string>
+    <string name="loading">加载中…</string>
+</resources>
